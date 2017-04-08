@@ -1,0 +1,45 @@
+.h1, .h2, .h3, h1, h2, h3 {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+pre {
+  background-color:white;
+  border:none;
+  padding:0;
+  margin:0;
+}
+
+a.link-info, a.link-info:focus, a.link-info:active {
+  color: #31708f;
+}
+a.link-success, a.link-success:focus, a.link-success:active {
+  color: #3c763d;
+}
+a.link-warning, a.link-warning:focus, a.link-warning:active {
+  color: #8a6d3b;
+}
+a.link-danger, a.link-danger:focus, a.link-danger:active {
+  color: #a94442;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.selected {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.meta--container {
+  margin-bottom: 15px;
+}
+
+.list-group-item-heading {
+  margin-bottom: 10px;
+}
+
+ul {
+    padding-left: 25px;
+}

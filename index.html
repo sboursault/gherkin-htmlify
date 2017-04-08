@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="import/offcanvas.css">
+    <link rel="stylesheet" href="import/features.css">
+
+  </head>
+  <body ng-app="myApp" ng-controller="FeatureCtrl">
+
+    <nav class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="#" class="navbar-brand">{{project}}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+          <div class="clearfix">
+            <p class="navbar-text pull-right">Published on : {{date}}</p>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+
+      <div class="row row-offcanvas row-offcanvas-left">
+
+        <div id="sidebar" class="col-sm-4 col-md-3 sidebar-offcanvas">
+          <div class="panel panel-default">
+
+            <div class="panel-heading strong">
+              Features
+            </div>
+            <div  class="panel-body">
+
+              <div class="input-group" class="panel-body">
+                <input ng-model="searchText" placeholder="filter..." class="form-control">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" ng-click="searchText = ''">X</button>
+                </span>
+              </div>
+
+              <br>
+              <ul>
+                <li>
+                  <a ng-class="{'selected' : !selectedFeature}" class="link-info"
+                 ng-click="select(null)" href="#">Overview</a>
+                </li>
+
+                <li ng-repeat="node in tableOfContents.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
+              </ul>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-sm-8 col-md-9">
+          <p class="pull-left visible-xs">
+            <button data-toggle="offcanvas" class="btn btn-primary btn-xs" type="button">Toggle nav</button>
+          </p>
+
+          <div class="row">
+            
+            <div ng-show="!selectedFeature" class="jumbotron">
+              <h3>
+                Welcome to {{project}}
+              </h3>
+            </div>
+            <div ng-show="!selectedFeature" class="panel panel-default">
+              <h3 class="panel-heading">
+                Overview
+              </h3>
+              <br>
+              <!--<h4 class="panel-body strong">
+                Overview :
+              </h4>-->
+              <ul>
+                <li ng-repeat="node in tableOfContents.children" ng-include="'node.html'"></li>
+              </ul>
+            </div>
+
+
+            <div ng-show="selectedFeature" class="panel panel-{{selectedFeature.status}}">
+              <h3 class="panel-heading">
+                {{selectedFeature.path}}
+              </h3>
+
+              <div class="panel-body">
+                <div ng-show="selectedFeature.meta" class="container meta--container">
+                  <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
+                </div>
+                
+                <pre ng-show="selectedFeature.description">{{selectedFeature.description}}</pre>
+                <br ng-show="selectedFeature.description">
+
+                <div class="list-group">
+                  <div ng-repeat="test in selectedFeature.tests" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{test.name}}</h4>
+                    <div ng-show="test.meta" class="list-group-item-text meta--container">
+                      <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
+                    </div>
+                    <div class="list-group-item-text">
+                      <pre>{{test.content}}</pre>
+                    </div>
+                  </div>
+                </div>
+                <!--<p><a role="button" href="#" class="btn btn-default">View details »</a></p>-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <!--<footer>
+        <p>Published on : {{date}}</p>
+      </footer>-->
+
+    </div>
+
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+    $(document).ready(function () {
+      $('[data-toggle="offcanvas"]').click(function () {
+        $('.row-offcanvas').toggleClass('active')
+      });
+    });
+    </script>
+    <script src="http://code.angularjs.org/1.0.1/angular-1.0.1.min.js"></script>
+    <script src="data.js"></script>
+    <script src="import/features.js"></script>
+
+      <!-- ng-include="'node.html'" -->
+    <script type="text/ng-template" id="node.html">
+      <a ng-show="node.feature" ng-click="select(node.feature)" class="strong link-{{node.feature.status}}">{{node.name}}</a>
+      <span ng-show="!node.feature && node.children" class="strong">{{node.name}}</span>
+      <span ng-show="!node.children">{{node.name}}</span>
+      <ul ng-show="node.children">
+        <li ng-repeat="node in node.children" ng-include="'node.html'"></li>
+      </ul>
+    </script>
+
+      <!-- ng-include="'node-overview.html'" -->
+    <script type="text/ng-template" id="node-overview.html">
+      <a ng-show="node.feature" ng-click="select(node.feature)" ng-class="{'selected' : node.feature == selectedFeature}" class="link-{{node.feature.status}}">{{node.name}}</a>
+      <span ng-show="!node.feature && node.children">{{node.name}}</span>
+      <!--<span>({{node.children.length}})</span>-->
+      <ul ng-show="node.children && !node.feature">
+        <li ng-repeat="node in node.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
+      </ul>
+    </script>
+
+  </body>
+</html>
