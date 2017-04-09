@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="import/features.css">
 
   </head>
-  <body ng-app="myApp" ng-controller="FeatureCtrl">
+  <body ng-app="myApp" ng-controller="FeatureController" ng-cloak>
 
     <nav class="navbar navbar-fixed-top navbar-inverse">
       <div class="container-fluid">
@@ -56,8 +56,7 @@
               <br>
               <ul>
                 <li>
-                  <a ng-class="{'selected' : !selectedFeature}" class="link-info"
-                 ng-click="select(null)" href="#">Overview</a>
+                  <a ng-class="{'selected' : !selectedFeature}" class="link-info" href="#/features">Overview</a>
                 </li>
 
                 <li ng-repeat="node in tableOfContents.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
@@ -74,43 +73,40 @@
           </p>
 
           <div class="row">
-            
-            <div ng-show="!selectedFeature" class="jumbotron">
+
+            <div ng-if="!selectedFeature" class="jumbotron">
               <h3>
                 Welcome to {{project}}
               </h3>
             </div>
-            <div ng-show="!selectedFeature" class="panel panel-default">
+            <div ng-if="!selectedFeature" class="panel panel-default">
               <h3 class="panel-heading">
                 Overview
               </h3>
               <br>
-              <!--<h4 class="panel-body strong">
-                Overview :
-              </h4>-->
               <ul>
                 <li ng-repeat="node in tableOfContents.children" ng-include="'node.html'"></li>
               </ul>
             </div>
 
 
-            <div ng-show="selectedFeature" class="panel panel-{{selectedFeature.status}}">
+            <div ng-if="selectedFeature" class="panel panel-{{selectedFeature.status}}">
               <h3 class="panel-heading">
-                {{selectedFeature.path}}
+                {{selectedFeature.formattedPath}}
               </h3>
 
               <div class="panel-body">
-                <div ng-show="selectedFeature.meta" class="container meta--container">
+                <div ng-if="selectedFeature.meta" class="container meta--container">
                   <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                 </div>
-                
-                <pre ng-show="selectedFeature.description">{{selectedFeature.description}}</pre>
-                <br ng-show="selectedFeature.description">
+
+                <pre ng-if="selectedFeature.description">{{selectedFeature.description}}</pre>
+                <br ng-if="selectedFeature.description">
 
                 <div class="list-group">
                   <div ng-repeat="test in selectedFeature.tests" class="list-group-item">
                     <h4 class="list-group-item-heading">{{test.name}}</h4>
-                    <div ng-show="test.meta" class="list-group-item-text meta--container">
+                    <div ng-if="test.meta" class="list-group-item-text meta--container">
                       <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                     </div>
                     <div class="list-group-item-text">
@@ -118,22 +114,33 @@
                     </div>
                   </div>
                 </div>
-                <!--<p><a role="button" href="#" class="btn btn-default">View details »</a></p>-->
               </div>
             </div>
           </div>
         </div>
 
       </div>
-
-      <hr>
-
-      <!--<footer>
-        <p>Published on : {{date}}</p>
-      </footer>-->
-
     </div>
 
+    <!-- ng-include="'node.html'" -->
+    <script type="text/ng-template" id="node.html">
+      <a ng-if="node.feature" href="#/features/{{node.feature.pathValueForUrl}}" class="strong link-{{node.feature.status}}">{{node.name}}</a>
+      <span ng-if="!node.feature && node.children" class="strong">{{node.name}}</span>
+      <span ng-if="!node.children">{{node.name}}</span>
+      <ul ng-if="node.children">
+        <li ng-repeat="node in node.children" ng-include="'node.html'"></li>
+      </ul>
+    </script>
+
+    <!-- ng-include="'node-overview.html'" -->
+    <script type="text/ng-template" id="node-overview.html">
+      <a ng-if="node.feature" href="#/features/{{node.feature.pathValueForUrl}}" ng-class="{'selected' : node.feature == selectedFeature}" class="link-{{node.feature.status}}">{{node.name}}</a>
+      <span ng-if="!node.feature && node.children">{{node.name}}</span>
+      <!--<span>({{node.children.length}})</span>-->
+      <ul ng-if="node.children && !node.feature">
+        <li ng-repeat="node in node.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
+      </ul>
+    </script>
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -147,29 +154,10 @@
       });
     });
     </script>
-    <script src="http://code.angularjs.org/1.0.1/angular-1.0.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <!-- try 1.6.3 -->
     <script src="data.js"></script>
     <script src="import/features.js"></script>
-
-      <!-- ng-include="'node.html'" -->
-    <script type="text/ng-template" id="node.html">
-      <a ng-show="node.feature" ng-click="select(node.feature)" class="strong link-{{node.feature.status}}">{{node.name}}</a>
-      <span ng-show="!node.feature && node.children" class="strong">{{node.name}}</span>
-      <span ng-show="!node.children">{{node.name}}</span>
-      <ul ng-show="node.children">
-        <li ng-repeat="node in node.children" ng-include="'node.html'"></li>
-      </ul>
-    </script>
-
-      <!-- ng-include="'node-overview.html'" -->
-    <script type="text/ng-template" id="node-overview.html">
-      <a ng-show="node.feature" ng-click="select(node.feature)" ng-class="{'selected' : node.feature == selectedFeature}" class="link-{{node.feature.status}}">{{node.name}}</a>
-      <span ng-show="!node.feature && node.children">{{node.name}}</span>
-      <!--<span>({{node.children.length}})</span>-->
-      <ul ng-show="node.children && !node.feature">
-        <li ng-repeat="node in node.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
-      </ul>
-    </script>
 
   </body>
 </html>

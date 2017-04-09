@@ -43,3 +43,7 @@ a.link-danger, a.link-danger:focus, a.link-danger:active {
 ul {
     padding-left: 25px;
 }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}

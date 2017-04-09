@@ -1,2 +1,2 @@
 # gherkin-htmlify
-generate html pages from your feature files to share them easier
+Use node to generate html pages from your feature files and share them easier.
