@@ -96,23 +96,26 @@
               </h3>
 
               <div class="panel-body">
-                <div ng-if="selectedFeature.meta" class="container meta--container">
+                <div ng-if="selectedFeature.meta" class="container">
                   <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                 </div>
-
+                <br>
                 <pre ng-if="selectedFeature.description">{{selectedFeature.description}}</pre>
                 <br ng-if="selectedFeature.description">
-
-                <div class="list-group">
-                  <div ng-repeat="test in selectedFeature.tests" class="list-group-item">
-                    <h4 class="list-group-item-heading">{{test.name}}</h4>
-                    <div ng-if="test.meta" class="list-group-item-text meta--container">
-                      <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
-                    </div>
-                    <div class="list-group-item-text">
-                      <pre>{{test.content}}</pre>
-                    </div>
-                  </div>
+                  <div ng-repeat="test in selectedFeature.tests">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-target="#{{scenario + '-' + $index}}">{{test.name}}</a>
+                        </h4>
+                        <div ng-if="test.meta">
+                          <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
+                        </div>
+                      </div>
+                      <div id="{{scenario + '-' + $index}}" class="collapse panel-collapse" ng-class="{'in' : !test.isJustInCase}">
+                        <br>
+                        <pre>{{test.content}}</pre>
+                      </div>
                 </div>
               </div>
             </div>

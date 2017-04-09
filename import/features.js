@@ -76,6 +76,10 @@ app.controller("FeatureController", function($scope, $location) {
         feature.status = 'info';
       else
         feature.status = 'success';
+      feature.tests.forEach(function enhance(scenario) {
+        scenario.meta = scenario.meta || [];
+        scenario.isJustInCase = scenario.meta.indexOf('@justInCase') >= 0;
+      });
     });
 
   };

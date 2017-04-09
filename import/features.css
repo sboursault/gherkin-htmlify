@@ -32,10 +32,6 @@ a.link-danger, a.link-danger:focus, a.link-danger:active {
   text-decoration: underline;
 }
 
-.meta--container {
-  margin-bottom: 15px;
-}
-
 .list-group-item-heading {
   margin-bottom: 10px;
 }
