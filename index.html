@@ -56,7 +56,7 @@
               <br>
               <ul>
                 <li>
-                  <a ng-class="{'selected' : !selectedFeature}" class="link-info" href="#/features">Overview</a>
+                  <a ng-class="{'selected' : !selectedFeature}" class="link-info" href="#!/features">Overview</a>
                 </li>
 
                 <li ng-repeat="node in tableOfContents.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
@@ -127,7 +127,7 @@
 
     <!-- ng-include="'node.html'" -->
     <script type="text/ng-template" id="node.html">
-      <a ng-if="node.feature" href="#/features/{{node.feature.pathValueForUrl}}" class="strong link-{{node.feature.status}}">{{node.name}}</a>
+      <a ng-if="node.feature" href="#!/features/{{node.feature.pathValueForUrl}}" class="strong link-{{node.feature.status}}">{{node.name}}</a>
       <span ng-if="!node.feature && node.children" class="strong">{{node.name}}</span>
       <span ng-if="!node.children">{{node.name}}</span>
       <ul ng-if="node.children">
@@ -137,7 +137,7 @@
 
     <!-- ng-include="'node-overview.html'" -->
     <script type="text/ng-template" id="node-overview.html">
-      <a ng-if="node.feature" href="#/features/{{node.feature.pathValueForUrl}}" ng-class="{'selected' : node.feature == selectedFeature}" class="link-{{node.feature.status}}">{{node.name}}</a>
+      <a ng-if="node.feature" href="#!/features/{{node.feature.pathValueForUrl}}" ng-class="{'selected' : node.feature == selectedFeature}" class="link-{{node.feature.status}}">{{node.name}}</a>
       <span ng-if="!node.feature && node.children">{{node.name}}</span>
       <!--<span>({{node.children.length}})</span>-->
       <ul ng-if="node.children && !node.feature">
@@ -157,7 +157,7 @@
       });
     });
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
     <!-- try 1.6.3 -->
     <script src="data.js"></script>
     <script src="import/features.js"></script>

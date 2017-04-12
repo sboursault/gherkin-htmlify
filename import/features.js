@@ -26,8 +26,7 @@ app.filter('customFilter',[ function () {
 
     var filtered = [];
     searchText = searchText.toLowerCase();
-    angular.forEach(items, function(item) {
-      //console.log(items);
+    items.forEach(function(item) {
       for (var keyword of searchText.split(' ')) {
         if(!recursiveSearch(item, keyword)) return;
       }
@@ -44,6 +43,7 @@ app.controller("FeatureController", function($scope, $location) {
   $scope.date = source.date;
   $scope.project = source.project;
   $scope.selectedFeature = null;
+  $scope.tableOfContents = { 'children': []};
 
   $scope.metaStyle = function(meta) {
     // should return one of { 'default', 'primary', 'success', 'info', 'warning', 'danger' }
@@ -83,25 +83,18 @@ app.controller("FeatureController", function($scope, $location) {
     });
 
   };
-  $scope.loadFeatures();
 
   $scope.loadFeatureFromUrlPath = function() {
     var parts = $location.path().split('/');
     var featureParam = parts[2];
     if (featureParam) {
-      $scope.features.forEach(function(feature) {
-        if (feature.pathValueForUrl == featureParam) {
-          $scope.selectedFeature = feature;
-        }
-      });
+      $scope.selectedFeature = $scope.features.find(function(elt) { return elt.pathValueForUrl == featureParam } );
     } else {
       $scope.selectedFeature = null;
     }
   }
 
   $scope.$watch(function() { return $location.path();}, $scope.loadFeatureFromUrlPath );
-
-  $scope.tableOfContents = { 'children': []};
 
   $scope.loadTableOfContents = function() {
     $scope.features.forEach(function createNode(feature) {
@@ -125,5 +118,7 @@ app.controller("FeatureController", function($scope, $location) {
       })
     });
   };
+  $scope.loadFeatures();
+  $scope.loadFeatureFromUrlPath();
   $scope.loadTableOfContents();
 });
