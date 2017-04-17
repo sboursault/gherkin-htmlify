@@ -1,8 +1,13 @@
 
 var fs = require("fs");
 var file = require("file");
+var path = require('path');
 
 function process(featureDirectoryPath, outputDir, options) {
+  if (fs.existsSync(outputDir)) {
+    throw outputDir + ' already exists. Please remove it manually.';
+  }
+  copyFolderRecursiveSync(__dirname + '/html', outputDir);
 
   var features = [];
 
@@ -67,14 +72,14 @@ function process(featureDirectoryPath, outputDir, options) {
     var features = JSON.stringify(features, null, "\t");
 
     var output = "var source = {};\n"
-    output += "source.project = '" + options.projectName + "';\n";
+    output += "source.project = '" + options.mainTitle + "';\n";
     output += "source.features = " + features + ";\n";
-    output += "source.date = '" + getDateTime() + "';\n";
+    output += "source.date = '" + getFormattedDate() + "';\n";
 
     fs.writeFileSync(outputDir +'/data.js', output, {encoding: 'utf8'});
 }
 
-function getDateTime() {
+var getFormattedDate = function() {
   var date = new Date();
   var hour = date.getHours();
   hour = (hour < 10 ? "0" : "") + hour;
@@ -88,4 +93,37 @@ function getDateTime() {
   var day  = date.getDate();
   day = (day < 10 ? "0" : "") + day;
   return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+}
+
+
+function copyFileSync( source, target ) {
+  var targetFile = target;
+  //if target is a directory a new file with the same name will be created
+  if ( fs.existsSync( target ) ) {
+    if ( fs.lstatSync( target ).isDirectory() ) {
+      targetFile = path.join( target, path.basename( source ) );
+    }
+  }
+  fs.writeFileSync(targetFile, fs.readFileSync(source));
+}
+
+function copyFolderRecursiveSync( source, target ) {
+  var files = [];
+  //check if folder needs to be created or integrated
+  var targetFolder = path.join( target, path.basename( source ) );
+  if ( !fs.existsSync( targetFolder ) ) {
+      fs.mkdirSync( targetFolder );
+  }
+  //copy
+  if ( fs.lstatSync( source ).isDirectory() ) {
+    files = fs.readdirSync( source );
+    files.forEach( function ( file ) {
+      var curSource = path.join( source, file );
+      if ( fs.lstatSync( curSource ).isDirectory() ) {
+        copyFolderRecursiveSync( curSource, targetFolder );
+      } else {
+        copyFileSync( curSource, targetFolder );
+      }
+    } );
+  }
 }
