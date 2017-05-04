@@ -27,7 +27,7 @@ Generate html pages from your feature files and share them easier.
   Now, checkout the gherkin-htmlify project to generate html pages
   
     git clone https://github.com/sboursault/gherkin-htmlify.git
-    npm install file ncp
+    npm install gherkin-htmlify
     node runner.js
 
    
