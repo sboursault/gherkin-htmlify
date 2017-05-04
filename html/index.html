@@ -39,30 +39,21 @@
 
         <div id="sidebar" class="col-sm-4 col-md-3 sidebar-offcanvas">
           <div class="panel panel-default">
-
-            <div class="panel-heading strong">
-              Features
-            </div>
+            <div class="panel-heading strong">Features</div>
             <div  class="panel-body">
-
               <div class="input-group" class="panel-body">
                 <input ng-model="searchText" placeholder="filter..." class="form-control">
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" ng-click="searchText = ''">X</button>
                 </span>
               </div>
-
               <br>
               <ul>
-                <li>
-                  <a ng-class="{'selected' : !selectedFeature}" class="link-info" href="#!/features">Overview</a>
-                </li>
-
-                <li ng-repeat="node in tableOfContents.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
+                <li><a ng-class="{'selected' : !selectedFeature}" class="link-info" href="#!/features">Overview</a></li>
+                <li ng-repeat="node in tableOfContents.children | withWords:searchText"
+                    ng-include="'node-overview.html'"></li>
               </ul>
-
             </div>
-
           </div>
         </div>
 
@@ -70,36 +61,26 @@
           <p class="pull-left visible-xs">
             <button data-toggle="offcanvas" class="btn btn-primary btn-xs" type="button">Toggle nav</button>
           </p>
-
           <div class="row">
-
             <div ng-if="!selectedFeature" class="jumbotron">
-              <h3>
-                Welcome to {{project}}
-              </h3>
+              <h3>Welcome to {{project}}</h3>
             </div>
             <div ng-if="!selectedFeature" class="panel panel-default">
-              <h3 class="panel-heading">
-                Overview
-              </h3>
+              <h3 class="panel-heading">Overview</h3>
               <br>
               <ul>
                 <li ng-repeat="node in tableOfContents.children" ng-include="'node.html'"></li>
               </ul>
             </div>
 
-
             <div ng-if="selectedFeature" class="panel panel-{{selectedFeature.status}}">
-              <h3 class="panel-heading">
-                {{selectedFeature.formattedPath}}
-              </h3>
-
+              <h3 class="panel-heading">{{selectedFeature.formattedPath}}</h3>
               <div class="panel-body">
                 <div ng-if="selectedFeature.meta" class="container">
                   <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                 </div>
                 <br>
-                <pre ng-if="selectedFeature.description">{{selectedFeature.description}}</pre>
+                <div ng-if="selectedFeature.description" ng-bind-html="selectedFeature.description | rawHtml"></div>
                 <br ng-if="selectedFeature.description">
                   <div ng-repeat="test in selectedFeature.tests">
                     <div class="panel panel-default">
@@ -140,7 +121,7 @@
       <span ng-if="!node.feature && node.children">{{node.name}}</span>
       <!--<span>({{node.children.length}})</span>-->
       <ul ng-if="node.children && !node.feature">
-        <li ng-repeat="node in node.children | customFilter:searchText" ng-include="'node-overview.html'"></li>
+        <li ng-repeat="node in node.children | withWords:searchText" ng-include="'node-overview.html'"></li>
       </ul>
     </script>
 

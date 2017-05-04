@@ -1,42 +1,22 @@
 
-
 var app = angular.module('myApp', []);
 
-app.filter('customFilter',[ function () {
+app.filter('withWords', ['$filter', function ($filter) {
+  // unlike the native ng filter, 'withWords' filters elements which contains all words separately
   return function(items, searchText) {
-
-  function recursiveSearch(obj, keyword) {
-      if (Array.isArray(obj)) {
-        for (var item of obj) {
-          if (recursiveSearch(item, keyword)) return true;
-        }
-      } else {
-        for (var property in obj) {
-          if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] == "object") {
-                if (recursiveSearch(obj[property], keyword)) return true;
-            } else if (typeof obj[property] == "string") {
-                if (obj[property].toLowerCase().indexOf(keyword) >= 0) return true;
-            }
-          }
-        }
-      }
-      return false;
+    for (var keyword of searchText.split(' ')) {
+      items = $filter('filter')(items, keyword);
     }
-
-    var filtered = [];
-    searchText = searchText.toLowerCase();
-    items.forEach(function(item) {
-      for (var keyword of searchText.split(' ')) {
-        if(!recursiveSearch(item, keyword)) return;
-      }
-      filtered.push(item);
-    });
-    return filtered;
+    return items;
   };
-}]);
+}])
+.filter('rawHtml', ['$sce', function($sce){
+  return function(val) {
+    return $sce.trustAsHtml(val);
+  };
+}])
 
-app.controller("FeatureController", function($scope, $location) {
+.controller("FeatureController", function($scope, $location) {
 
   $scope.searchText = '';
   $scope.features = source.features;
@@ -76,6 +56,7 @@ app.controller("FeatureController", function($scope, $location) {
         feature.status = 'info';
       else
         feature.status = 'success';
+      feature.description = '<p>' + feature.description.replace(/\n/g, "<p>");
       feature.tests.forEach(function enhance(scenario) {
         scenario.meta = scenario.meta || [];
         scenario.isJustInCase = scenario.meta.indexOf('@justInCase') >= 0;
