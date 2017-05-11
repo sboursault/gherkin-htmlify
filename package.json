@@ -9,6 +9,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "gulp-mocha": "^4.3.1",
+    "gulp-mocha-phantomjs": "^0.12.1",
     "mocha": "^3.3.0"
   }
 }
