@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const mocha = require('gulp-mocha');
 const mochaPhantomJS = require('gulp-mocha-phantomjs');
+
 /*gulp.task('watch', function() {
    gulp.watch('*.test.js', ['test']);
 });*/
@@ -11,8 +12,8 @@ gulp.task('parser-test', () =>
 );
 
 gulp.task('ui-test', function () {
-    return gulp
-    .src('html/test_runner.html')
+   return gulp
+    .src('html/test/ui-test-runner.html')
     .pipe(mochaPhantomJS());
 });
 
