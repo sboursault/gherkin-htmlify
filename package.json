@@ -8,6 +8,10 @@
     "url": "https://github.com/sboursault/gherkin-htmlify.git"
   },
   "license": "MIT",
+  "dependencies": {
+    "file": "^0.2.2",
+    "ncp": "^2.0.0"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "gulp-mocha": "^4.3.1",
