@@ -3,9 +3,17 @@
   "version": "0.0.1",
   "author": "sboursault",
   "description": "Generate html pages from your feature files and share them easier.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sboursault/gherkin-htmlify.git"
+  },
   "license": "MIT",
-  "dependencies": {
-    "file": "^0.2.2",
-    "ncp": "^2.0.0"
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp-mocha": "^4.3.1",
+    "gulp-mocha-phantomjs": "^0.12.1",
+    "mocha": "^3.3.0",
+    "angular": "1.6.3",
+    "angular-mocks": "1.6.3"
   }
 }
