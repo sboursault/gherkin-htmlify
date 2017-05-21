@@ -61,10 +61,21 @@ app.filter('withWords', ['$filter', function ($filter) {
       feature.tests.forEach(function enhance(scenario) {
         scenario.meta = scenario.meta || [];
         scenario.isJustInCase = scenario.meta.indexOf('@justInCase') >= 0;
+        scenario.exampleBlocks = scenario.exampleBlocks || [];
+        scenario.exampleBlocks.forEach(function(exampleBlock) {
+          exampleBlock.htmlTable = '<table class="table table-striped"><tr>';
+          exampleBlock.headerRow.forEach(function(elt) { exampleBlock.htmlTable += '<th>' + elt + '</th>' });
+          exampleBlock.htmlTable += '</tr>';
+          exampleBlock.rows.forEach(function(row) {
+            exampleBlock.htmlTable += '<tr>';
+            row.forEach(function(elt) { exampleBlock.htmlTable += '<td>' + elt + '</td>' });
+            exampleBlock.htmlTable += '</tr>';
+          });
+          exampleBlock.htmlTable += '</table>';
+        });
       });
     });
     $scope.features = features;
-
   };
 
   $scope.loadFeatureFromUrlPath = function() {

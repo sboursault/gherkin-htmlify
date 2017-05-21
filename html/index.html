@@ -82,21 +82,29 @@
                 <br>
                 <div ng-if="selectedFeature.description" ng-bind-html="selectedFeature.description | rawHtml"></div>
                 <br ng-if="selectedFeature.description">
-                  <div ng-repeat="test in selectedFeature.tests">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h4 class="panel-title">
-                          <a data-toggle="collapse" data-target="#{{scenario + '-' + $index}}">{{test.name}}</a>
-                        </h4>
-                        <div ng-if="test.meta">
-                          <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
-                        </div>
-                      </div>
-                      <div id="{{scenario + '-' + $index}}" class="collapse panel-collapse" ng-class="{'in' : !test.isJustInCase}">
-                        <br>
-                        <pre>{{test.content}}</pre>
+                <div ng-repeat="test in selectedFeature.tests">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-target="#{{scenario + '-' + $index}}">{{test.name}}</a>
+                      </h4>
+                      <div ng-if="test.meta">
+                        <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                       </div>
                     </div>
+                    <div id="{{scenario + '-' + $index}}" class="collapse panel-body panel-collapse" ng-class="{'in' : !test.isJustInCase}">
+                      <br>
+                      <pre>{{test.content}}</pre>
+                      <br>
+                      <p ng-if="test.exampleBlocks.length > 0">Examples:</p>
+                      <div ng-repeat="exampleBlock in test.exampleBlocks">
+                        <div ng-if="exampleBlock.tags">
+                          <span ng-repeat="tag in exampleBlock.tags" class="label label-{{metaStyle(tag)}}">{{tag}}</span>
+                        </div>
+                        <div ng-bind-html="exampleBlock.htmlTable | rawHtml"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
