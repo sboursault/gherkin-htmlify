@@ -23,14 +23,15 @@ textRowToArray = function(text) {
 zeroOrMoreAnnotationLine = '(?: *@.*\\n)*',
 scenarioHeader = zeroOrMoreAnnotationLine + ' *Scenario\\b.*:.*',
 anyNumberOfChararcters = '[\\s\\S]*',
-anyNumberOfChararctersButAsFewAsPossible = '[\\s\\S]+?',
+anyNumberOfChararctersButAsFewAsPossible = anyNumberOfChararcters + '?',
+oneToManyNumberOfChararctersButAsFewAsPossible = '[\\s\\S]+?',
 followedByAScenarioOrEndOfFile = '(?=(?:' + scenarioHeader + ')|$)',
-allScenaroBlocksRegex = new RegExp( scenarioHeader + anyNumberOfChararctersButAsFewAsPossible + followedByAScenarioOrEndOfFile, 'gi'),
+allScenaroBlocksRegex = new RegExp( scenarioHeader + oneToManyNumberOfChararctersButAsFewAsPossible + followedByAScenarioOrEndOfFile, 'gi'),
 exampleHeader = '\\s*examples\\s*:.*\\n',
 exampleHeaderWithTags = zeroOrMoreAnnotationLine + exampleHeader,
 tableRow = '\\s*\\|[^\\n]*\\|\\s*\\n',
 followedByAnExampleBlocOrEndOfText = '(?=(?:' + exampleHeaderWithTags + ')|$)',
-allExampleBlocksRegex = new RegExp( exampleHeaderWithTags + anyNumberOfChararctersButAsFewAsPossible + followedByAnExampleBlocOrEndOfText, 'gi');
+allExampleBlocksRegex = new RegExp( exampleHeaderWithTags + oneToManyNumberOfChararctersButAsFewAsPossible + followedByAnExampleBlocOrEndOfText, 'gi');
 
 module.exports = {
   logEnabled: true,
@@ -45,7 +46,7 @@ module.exports = {
     feature.tests = [];
     feature.meta = splitWords(captureGroup(content, /([\s\S]*)feature\s*:/i));
     feature.name = captureGroup(content, /feature\s*:\s*(.*)\s*\n/i);
-    feature.description = captureGroup(content, new RegExp( 'feature\\s*:.*\\n' + '(' + anyNumberOfChararctersButAsFewAsPossible + ')' + followedByAScenarioOrEndOfFile, 'i'));
+    feature.description = captureGroup(content, new RegExp( 'feature\\s*:.*\\n' + '(' + oneToManyNumberOfChararctersButAsFewAsPossible + ')' + followedByAScenarioOrEndOfFile, 'i'));
     while((match = allScenaroBlocksRegex.exec(content)) !== null) {
       feature.tests.push(this.parseScenario(match[0]));
     }
@@ -65,6 +66,8 @@ module.exports = {
     this.log('  > ' + scenario.name);
     scenario.meta = splitWords(captureGroup(text, /([\s\S]*)scenario\s*:/i));
     scenario.content = captureGroup(text, /scenario.*:.*\s*\n([\s\S]*)/i);
+    scenario.documentation = captureGroup(scenario.content, new RegExp('^(' + anyNumberOfChararctersButAsFewAsPossible + ')(?:^|\\n)\\s*(?:given|when|then|and|\\*)', 'i'));
+    scenario.content = scenario.content.replace(scenario.documentation, '').trim();
     return scenario;
   },
   parseExampleBlock: function(text) {
