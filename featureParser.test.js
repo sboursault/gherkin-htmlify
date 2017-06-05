@@ -9,13 +9,14 @@ const featureText = "\n"
  + "Feature: Bank note\n"
  + "Let's see how bank notes behave :)\n"
  + "Scenario: dispense bank note\n"
+ + "	#some notes\n"
  + "	Given Atm has banknotes:\n"
  + "		| value | count |\n"
  + "		| $100  |     1 |\n"
+ + "\n"
  + "	When $100 is to be dispensed\n"
- + "	Then following banknotes are dispensed:\n"
- + "		| value | count |\n"
- + "		| $100  |     1 |\n"
+ + "  # some coments\n"
+ + "	Then a $100 banknote is dispensed\n"
  + "\n"
  + "@ignore\n"
  + "Scenario: withdraws money with valid pin\n"
@@ -63,9 +64,16 @@ describe('featureParser', function() {
     expect( feature.tests[1].meta ).to.eql(['@ignore']);
   });
   it('extracts scenario content', function() {
-    expect( feature.tests[0].content ).to.match(/^Given Atm has banknotes[\s\S]*| $100  |     1 |$/);
+    expect( feature.tests[0].content ).to.match(/^Given Atm has banknotes[\s\S]*Then a \$100 banknote is dispensed$/);
     expect( feature.tests[1].content ).to.match(/^Given a card with[\s\S]*Then can withdraw/);
     expect( feature.tests[2].content ).to.match(/^When a user wants[\s\S]*Then he gets a message with <result>/);
+  });
+  it('extracts scenario steps', function() {
+    expect( feature.tests[0].steps ).to.eql([
+      {text: 'Given Atm has banknotes:', table: [['value', 'count'],['$100', '1']] },
+      {text: 'When $100 is to be dispensed', table: [], blankLineBeforeStep: true },
+      {text: 'Then a $100 banknote is dispensed', table: [] }
+    ]);
   });
   it('extracts senario documentation', function() {
     expect( feature.tests[0].documentation ).to.eql( '' );

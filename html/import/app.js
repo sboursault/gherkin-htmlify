@@ -48,6 +48,25 @@ app.filter('withWords', ['$filter', function ($filter) {
       });
     }
     features.forEach(function enhance(feature) {
+      function wrapInTag(tag, input) {
+        var result = '';
+        if (!Array.isArray(input)) {
+          input = [input];
+        }
+        input.forEach(function(elt) { result += '<' + tag + '>' + elt + '</' + tag + '>' });
+        return result;
+      }
+      function buildHtmlTable(rows, headers) {
+        var htmlTable = '';
+        if (headers) {
+          htmlTable += wrapInTag('tr', wrapInTag('th', headers));
+        }
+        rows.forEach(function(row) {
+          htmlTable += wrapInTag('tr', wrapInTag('td', row));
+        });
+        htmlTable = '<table class="table table-striped">' + htmlTable + '</table>';
+        return htmlTable;
+      }
       feature.formattedPath = feature.path.replace(/\s*\/\s*/g, ' / ').replace(/_/g, ' ');
       feature.pathValueForUrl = feature.path.replace(/^(\s*\/)/, "").replace(/(\/)/g, ".");
       feature.meta = feature.meta || [];
@@ -61,17 +80,13 @@ app.filter('withWords', ['$filter', function ($filter) {
       feature.tests.forEach(function enhance(scenario) {
         scenario.meta = scenario.meta || [];
         scenario.isJustInCase = scenario.meta.indexOf('@justInCase') >= 0;
+        (scenario.steps || []).forEach(function(step) {
+          step.htmlText = step.text.replace(/^\s*([\S]*)/i, '<span class="step-first-word">$1</span>');
+          if(step.table) { step.htmlTable = buildHtmlTable(step.table) }
+        });
         scenario.exampleBlocks = scenario.exampleBlocks || [];
         scenario.exampleBlocks.forEach(function(exampleBlock) {
-          exampleBlock.htmlTable = '<table class="table table-striped"><tr>';
-          exampleBlock.headerRow.forEach(function(elt) { exampleBlock.htmlTable += '<th>' + elt + '</th>' });
-          exampleBlock.htmlTable += '</tr>';
-          exampleBlock.rows.forEach(function(row) {
-            exampleBlock.htmlTable += '<tr>';
-            row.forEach(function(elt) { exampleBlock.htmlTable += '<td>' + elt + '</td>' });
-            exampleBlock.htmlTable += '</tr>';
-          });
-          exampleBlock.htmlTable += '</table>';
+          exampleBlock.htmlTable = buildHtmlTable(exampleBlock.rows, exampleBlock.headerRow);
         });
       });
     });

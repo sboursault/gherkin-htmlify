@@ -53,7 +53,8 @@ module.exports = {
     return feature;
   },
   parseScenario: function(text) {
-    var scenario = {};
+    var scenario = { steps: []},
+      content, contentLines, i = 0;
     scenario.exampleBlocks = [];
     if (text.match(/scenario\s*outline\s*:/i)) {
       while((match = allExampleBlocksRegex.exec(text)) !== null) {
@@ -65,9 +66,19 @@ module.exports = {
     scenario.name = captureGroup(text, /scenario.*:\s*(.*)/i);
     this.log('  > ' + scenario.name);
     scenario.meta = splitWords(captureGroup(text, /([\s\S]*)scenario\s*:/i));
-    scenario.content = captureGroup(text, /scenario.*:.*\s*\n([\s\S]*)/i);
-    scenario.documentation = captureGroup(scenario.content, new RegExp('^(' + anyNumberOfChararctersButAsFewAsPossible + ')(?:^|\\n)\\s*(?:given|when|then|and|\\*)', 'i'));
-    scenario.content = scenario.content.replace(scenario.documentation, '').trim();
+    content = captureGroup(text, /scenario.*:.*\s*\n([\s\S]*)/i);
+    content = content.split('\n').filter(function isUncommented(lign){ return !lign.trim().startsWith('#') }).join('\n');
+    scenario.documentation = captureGroup(content, new RegExp('^(' + anyNumberOfChararctersButAsFewAsPossible + ')(?:^|\\n)\\s*(?:given|when|then|and|\\*)', 'i'));
+    scenario.content = content.replace(scenario.documentation, '').trim();
+    contentLines = scenario.content.split('\n');
+    while ( i < contentLines.length ) {
+      var step = { text: '', table: [] };
+      while (contentLines[i].trim() == '') { step.blankLineBeforeStep = true; i++; }
+      step.text = contentLines[i].trim();
+      i++;
+      while (contentLines[i] && contentLines[i].trim().startsWith('|')) { step.table.push(textRowToArray(contentLines[i])); i++; }
+      scenario.steps.push(step);
+    }
     return scenario;
   },
   parseExampleBlock: function(text) {

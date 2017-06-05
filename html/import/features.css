@@ -40,9 +40,29 @@ ul {
   padding-left: 25px;
 }
 
-pre {
-  color: #111;
-  font-size: 1.4rem;
+.table {
+  width: inherit;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.table>thead>tr>th, .table>thead>tr>td,
+.table>tbody>tr>th, .table>tbody>tr>td {
+  border-bottom: 1px solid #ddd;
+  text-align:center;
+}
+/*.monospace {
+  text-indent : 1em;
+  font-family: monospace;
+  font-size: 1.3rem;
+}*/
+.indent-block {
+  margin-left : 1.5rem;
+}
+
+.step-first-word {
+  /*color: darkred;*/
+  color: saddlebrown;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
