@@ -69,14 +69,29 @@ module.exports = {
     content = captureGroup(text, /scenario.*:.*\s*\n([\s\S]*)/i);
     content = content.split('\n').filter(function isUncommented(lign){ return !lign.trim().startsWith('#') }).join('\n');
     scenario.documentation = captureGroup(content, new RegExp('^(' + anyNumberOfChararctersButAsFewAsPossible + ')(?:^|\\n)\\s*(?:given|when|then|and|\\*)', 'i'));
-    scenario.content = content.replace(scenario.documentation, '').trim();
+    content = content.replace(scenario.documentation, '').trim();
+    scenario.content = content.replace(/\n\s*("""[\s\S]*?""")/g, "\n$1"); // remove blank lines before multilign values
     contentLines = scenario.content.split('\n');
     while ( i < contentLines.length ) {
       var step = { text: '', table: [] };
-      while (contentLines[i].trim() == '') { step.blankLineBeforeStep = true; i++; }
+      while (contentLines[i].trim() == '') {
+        step.leaveBlankLine = true; i++;
+      }
       step.text = contentLines[i].trim();
       i++;
-      while (contentLines[i] && contentLines[i].trim().startsWith('|')) { step.table.push(textRowToArray(contentLines[i])); i++; }
+      while (contentLines[i] && contentLines[i].trim().startsWith('|')) {
+        step.table.push(textRowToArray(contentLines[i])); i++;
+      }
+      if (contentLines[i] && contentLines[i].trim().startsWith('"""')) {
+        i++;
+        var multilignValueArray = []
+        step.multilignValue = '';
+        while (!contentLines[i].trim().startsWith('"""')) {
+          multilignValueArray.push(contentLines[i]); i++;
+        }
+        step.multilignValue += multilignValueArray.join('\n');
+        i++;
+      }
       scenario.steps.push(step);
     }
     return scenario;

@@ -82,6 +82,9 @@ app.filter('withWords', ['$filter', function ($filter) {
         scenario.isJustInCase = scenario.meta.indexOf('@justInCase') >= 0;
         (scenario.steps || []).forEach(function(step) {
           step.htmlText = step.text.replace(/^\s*([\S]*)/i, '<span class="step-first-word">$1</span>');
+          if (step.multilignValue) {
+            step.htmlMultilignValue = step.multilignValue.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;').replace(/\t/g, '  ');
+          }
           if(step.table) { step.htmlTable = buildHtmlTable(step.table) }
         });
         scenario.exampleBlocks = scenario.exampleBlocks || [];

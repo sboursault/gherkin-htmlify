@@ -23,7 +23,13 @@ const featureText = "\n"
  + "   A few details to provide context\n"
  + "   Given a card with pin '1234'\n"
  + "   When a user enters pin '1234'\n"
- + "   Then can withdraw\n"
+ + "   Then he gets the message:\n"
+ + "\n"
+ + "\"\"\"\n"
+ + "   Pin was ok...\n"
+ + "     ... how much do you want to withdrow ?\n"
+ + "\"\"\"\n"
+ + "   And he can withdraw\n"
  + "\n"
  + "Scenario outline: can't withdraw above 1000€\n"
  + "   When a user wants to withdraw <amount>\n"
@@ -63,21 +69,29 @@ describe('featureParser', function() {
     expect( feature.tests[0].meta ).to.eql([]);
     expect( feature.tests[1].meta ).to.eql(['@ignore']);
   });
-  it('extracts scenario content', function() {
-    expect( feature.tests[0].content ).to.match(/^Given Atm has banknotes[\s\S]*Then a \$100 banknote is dispensed$/);
-    expect( feature.tests[1].content ).to.match(/^Given a card with[\s\S]*Then can withdraw/);
-    expect( feature.tests[2].content ).to.match(/^When a user wants[\s\S]*Then he gets a message with <result>/);
+  it('extracts senario documentation', function() {
+    expect( feature.tests[0].documentation ).to.eql( '' );
+    expect( feature.tests[1].documentation ).to.eql( 'A few details to provide context' );
   });
   it('extracts scenario steps', function() {
     expect( feature.tests[0].steps ).to.eql([
       {text: 'Given Atm has banknotes:', table: [['value', 'count'],['$100', '1']] },
-      {text: 'When $100 is to be dispensed', table: [], blankLineBeforeStep: true },
+      {text: 'When $100 is to be dispensed', table: [], leaveBlankLine: true },
       {text: 'Then a $100 banknote is dispensed', table: [] }
     ]);
   });
-  it('extracts senario documentation', function() {
-    expect( feature.tests[0].documentation ).to.eql( '' );
-    expect( feature.tests[1].documentation ).to.eql( 'A few details to provide context' );
+  describe('multilign values', function() {
+    it('extracts multilign values', function() {
+    console.log(feature.tests[1].content);
+      expect( feature.tests[1].steps[2] ).to.eql({
+        text: 'Then he gets the message:',
+        table: [],
+        multilignValue: "   Pin was ok...\n     ... how much do you want to withdrow ?"
+      });
+    });
+    it('preserves the step after a multilign value', function() {
+      expect( feature.tests[1].steps[3] ).to.eql({text: 'And he can withdraw', table: []});
+    });
   });
   it('extracts scenario examples', function() {
     expect( feature.tests[2].exampleBlocks ).to.eql([{

@@ -95,9 +95,10 @@
                     <div id="{{scenario + '-' + $index}}" class="collapse panel-body panel-collapse" ng-class="{'in' : !test.isJustInCase}">
                       <p ng-if="test.documentation">{{test.documentation}}</p>
                       <div ng-repeat="step in test.steps" class="indent-block">
-                        <br ng-if="step.blankLineBeforeStep">
+                        <br ng-if="step.leaveBlankLine">
                         <div ng-bind-html="step.htmlText | rawHtml"></div>
-                        <div class="indent-block" ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml"></div>
+                        <div ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml" class="indent-block"></div>
+                        <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
                       </div>
                       <p ng-if="test.exampleBlocks.length > 0">Examples:</p>
                       <div ng-repeat="exampleBlock in test.exampleBlocks">
