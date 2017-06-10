@@ -67,6 +67,9 @@ app.filter('withWords', ['$filter', function ($filter) {
         htmlTable = '<table class="table table-striped">' + htmlTable + '</table>';
         return htmlTable;
       }
+      function toHtmlPreserveFormat(text) {
+        return (text || '').replace(/\n/g, '<br>').replace(/ /g, '&nbsp;').replace(/\t/g, '&nbsp;&nbsp;');
+      }
       feature.formattedPath = feature.path.replace(/\s*\/\s*/g, ' / ').replace(/_/g, ' ');
       feature.pathValueForUrl = feature.path.replace(/^(\s*\/)/, "").replace(/(\/)/g, ".");
       feature.meta = feature.meta || [];
@@ -83,7 +86,7 @@ app.filter('withWords', ['$filter', function ($filter) {
         (scenario.steps || []).forEach(function(step) {
           step.htmlText = step.text.replace(/^\s*([\S]*)/i, '<span class="step-first-word">$1</span>');
           if (step.multilignValue) {
-            step.htmlMultilignValue = step.multilignValue.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;').replace(/\t/g, '  ');
+            step.htmlMultilignValue = toHtmlPreserveFormat(step.multilignValue);
           }
           if(step.table) { step.htmlTable = buildHtmlTable(step.table) }
         });

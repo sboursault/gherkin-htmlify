@@ -82,7 +82,6 @@ describe('featureParser', function() {
   });
   describe('multilign values', function() {
     it('extracts multilign values', function() {
-    console.log(feature.tests[1].content);
       expect( feature.tests[1].steps[2] ).to.eql({
         text: 'Then he gets the message:',
         table: [],

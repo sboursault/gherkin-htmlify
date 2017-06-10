@@ -1,7 +1,6 @@
 
 var expect = chai.expect;
 describe('myApp', function () {
-  describe('#withWordsFilter', function () {
     var scope, $filter, $location, createFeatureController;
     beforeEach(function() {
       module('myApp');
@@ -16,11 +15,14 @@ describe('myApp', function () {
       });
       createFeatureController();
     });
+  describe('#withWordsFilter', function () {
     it('filters items which contains words separately', function () {
       var items = ['hello john, nice to meet you', 'hey roman, nice to meet you']
       expect($filter('withWords')(items, 'meet roman'))
         .to.eql(['hey roman, nice to meet you']);
     });
+  });
+  describe('#FeatureController', function () {
     describe('enhances the features with html and styles', function () {
       function newSimpleFeature() {
         return {
@@ -38,14 +40,25 @@ describe('myApp', function () {
       it('strongifies each step\'s first word in an html text', function () {
         var feature = newSimpleFeature();
         feature.tests = [{
-            name: 'test 1',
-            steps: [
-              {text: 'Given my apple was poisened'},
-              {text: 'When I taste it'},
-              {text: 'Then I need to sleep for a while'}]}];
+          name: 'test 1',
+          steps: [
+            {text: 'Given my apple was poisened'},
+            {text: 'When I taste it'},
+            {text: 'Then I need to sleep for a while'}]}];
         scope.loadFeatures([ feature ]);
         expect(scope.features[0].tests[0].steps[0].htmlText)
           .to.eql('<span class="step-first-word">Given</span> my apple was poisened');
+      });
+      it('generates html from multilign value', function(){
+        var feature = newSimpleFeature();
+        feature.tests = [{
+          name: 'test 1',
+          steps: [{
+            text: 'Given the product:',
+            multilignValue: '{\n\t"_id": "1234567",\n\t"name":"pen"\n}'}]}];
+        scope.loadFeatures([ feature ]);
+        expect(scope.features[0].tests[0].steps[0].htmlMultilignValue)
+          .to.eql('{<br>&nbsp;&nbsp;"_id":&nbsp;"1234567",<br>&nbsp;&nbsp;"name":"pen"<br>}');
       });
       it('builds an html table from examples', function () {
         var feature = newSimpleFeature();
