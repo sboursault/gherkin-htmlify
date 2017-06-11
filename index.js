@@ -35,6 +35,8 @@ var gherkinHtmlify = {
     file.walkSync(featureDirectoryPath,
       function callback(directory, dirs, files) {
         files.forEach(function(file) {
+          if (!file.match(/\.feature$/i))
+            return;
           var filePath = directory + '/' + file;
           var fileContent = fs.readFileSync(filePath, 'utf8');
           console.log(filePath);
