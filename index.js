@@ -41,7 +41,11 @@ var gherkinHtmlify = {
           var fileContent = fs.readFileSync(filePath, 'utf8');
           console.log(filePath);
           var functionalPath = filePath.replace(featureDirectoryPath, '').replace('.feature', '')
-          features.push(featureParser.parseContent(functionalPath, fileContent));
+          try {
+            features.push(featureParser.parseContent(functionalPath, fileContent));
+          } catch(e) {
+            console.log('WARN: could not parse ' + filePath + '.', e);
+          }
         });
       });
 
