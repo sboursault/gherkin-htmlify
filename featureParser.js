@@ -20,16 +20,17 @@ textRowToArray = function(text) {
   array.forEach(function(elt) {trimmedArray.push(elt.trim())});
   return trimmedArray;
 },
-zeroOrMoreAnnotationLine = '(?: *@.*\\n)*',
-scenarioHeader = zeroOrMoreAnnotationLine + ' *Scenario\\b.*:.*',
+endOfLine = '\\s*\\n',
+zeroOrMoreAnnotationLine = '(?:[ \\t]*@.*\\n)*',
+scenarioHeader = zeroOrMoreAnnotationLine + '[ \\t]*Scenario\\b.*:.*',
 anyNumberOfChararcters = '[\\s\\S]*',
 anyNumberOfChararctersButAsFewAsPossible = anyNumberOfChararcters + '?',
 oneToManyNumberOfChararctersButAsFewAsPossible = '[\\s\\S]+?',
 followedByAScenarioOrEndOfFile = '(?=(?:' + scenarioHeader + ')|$)',
 allScenaroBlocksRegex = new RegExp( scenarioHeader + oneToManyNumberOfChararctersButAsFewAsPossible + followedByAScenarioOrEndOfFile, 'gi'),
-exampleHeader = '\\s*examples\\s*:.*\\n',
+exampleHeader = '\\s*examples\\s*:.*' + endOfLine,
 exampleHeaderWithTags = zeroOrMoreAnnotationLine + exampleHeader,
-tableRow = '\\s*\\|[^\\n]*\\|\\s*\\n',
+tableRow = '\\s*\\|[^\\n]*\\|' + endOfLine,
 followedByAnExampleBlocOrEndOfText = '(?=(?:' + exampleHeaderWithTags + ')|$)',
 allExampleBlocksRegex = new RegExp( exampleHeaderWithTags + oneToManyNumberOfChararctersButAsFewAsPossible + followedByAnExampleBlocOrEndOfText, 'gi');
 
@@ -45,8 +46,8 @@ module.exports = {
     feature.meta = []
     feature.tests = [];
     feature.meta = splitWords(captureGroup(content, /([\s\S]*)feature\s*:/i));
-    feature.name = captureGroup(content, /feature\s*:\s*(.*)\s*\n/i);
-    feature.description = captureGroup(content, new RegExp( 'feature\\s*:.*\\n' + '(' + oneToManyNumberOfChararctersButAsFewAsPossible + ')' + followedByAScenarioOrEndOfFile, 'i'));
+    feature.name = captureGroup(content, new RegExp('feature\\s*:\\s*(.*)' + endOfLine, 'i'));
+    feature.description = captureGroup(content, new RegExp('feature\\s*:.*' + endOfLine + '(' + oneToManyNumberOfChararctersButAsFewAsPossible + ')' + followedByAScenarioOrEndOfFile, 'i'));
     while((match = allScenaroBlocksRegex.exec(content)) !== null) {
       feature.tests.push(this.parseScenario(match[0]));
     }
@@ -64,7 +65,7 @@ module.exports = {
       text = text.substr(0, text.indexOf(firstExampleHeader));
     }
     scenario.name = captureGroup(text, /scenario.*:\s*(.*)/i);
-    this.log('  > ' + scenario.name);
+    this.log(' > ' + scenario.name);
     scenario.meta = splitWords(captureGroup(text, /([\s\S]*)scenario\s*:/i));
     content = captureGroup(text, /scenario.*:.*\s*\n([\s\S]*)/i);
     content = content.split('\n').filter(function isUncommented(lign){ return !lign.trim().startsWith('#') }).join('\n');
