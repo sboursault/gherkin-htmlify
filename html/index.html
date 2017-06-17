@@ -41,7 +41,7 @@
           <div class="panel panel-default">
             <div class="panel-heading strong">Features</div>
             <div  class="panel-body">
-              <div class="input-group" class="panel-body">
+              <div class="input-group" class="panel-body" id="keyword-controls">
                 <input ng-model="searchText" placeholder="filter..." class="form-control">
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" ng-click="searchText = ''">X</button>
@@ -61,57 +61,60 @@
           <p class="pull-left visible-xs">
             <button data-toggle="offcanvas" class="btn btn-primary btn-xs" type="button">Toggle nav</button>
           </p>
-          <div class="row">
+          <div class="row ">
             <div ng-if="!selectedFeature" class="jumbotron">
               <h3>Welcome to {{project}}</h3>
             </div>
-            <div ng-if="!selectedFeature" class="panel panel-default">
-              <h3 class="panel-heading">Overview</h3>
-              <br>
-              <ul>
-                <li ng-repeat="node in tableOfContents.children" ng-include="'node.html'"></li>
-              </ul>
-            </div>
 
-            <div ng-if="selectedFeature" class="panel panel-{{selectedFeature.status}}">
-              <h3 class="panel-heading">{{selectedFeature.formattedPath}}</h3>
-              <div class="panel-body">
-                <div ng-if="selectedFeature.meta" class="container">
-                  <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
-                </div>
+            <main>
+              <div ng-if="!selectedFeature" class="panel panel-default">
+                <h3 class="panel-heading">Overview</h3>
                 <br>
-                <div ng-if="selectedFeature.description" ng-bind-html="selectedFeature.description | rawHtml"></div>
-                <br ng-if="selectedFeature.description">
-                <div ng-repeat="test in selectedFeature.tests">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
-                        <a data-toggle="collapse" data-target="#{{scenario + '-' + $index}}">{{test.name}}</a>
-                      </h4>
-                      <div ng-if="test.meta">
-                        <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
-                      </div>
-                    </div>
-                    <div id="{{scenario + '-' + $index}}" class="collapse panel-body panel-collapse" ng-class="{'in' : !test.isJustInCase}">
-                      <p ng-if="test.documentation">{{test.documentation}}</p>
-                      <div ng-repeat="step in test.steps" class="indent-block">
-                        <br ng-if="step.leaveBlankLine">
-                        <div ng-bind-html="step.htmlText | rawHtml"></div>
-                        <div ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml" class="indent-block"></div>
-                        <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
-                      </div>
-                      <!--<p ng-if="test.exampleBlocks.length > 0">Examples:</p>-->
-                      <div ng-repeat="exampleBlock in test.exampleBlocks">
-                        <div ng-if="exampleBlock.tags">
-                          <span ng-repeat="tag in exampleBlock.tags" class="label label-{{metaStyle(tag)}}">{{tag}}</span>
+                <ul>
+                  <li ng-repeat="node in tableOfContents.children" ng-include="'node.html'"></li>
+                </ul>
+              </div>
+
+              <div ng-if="selectedFeature" class="panel panel-{{selectedFeature.status}}">
+                <h3 class="panel-heading">{{selectedFeature.formattedPath}}</h3>
+                <div class="panel-body">
+                  <div ng-if="selectedFeature.meta" class="container">
+                    <span ng-repeat="meta in selectedFeature.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
+                  </div>
+                  <br>
+                  <div ng-if="selectedFeature.description" ng-bind-html="selectedFeature.description | rawHtml"></div>
+                  <br ng-if="selectedFeature.description">
+                  <div ng-repeat="test in selectedFeature.tests">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-target="#{{scenario + '-' + $index}}">{{test.name}}</a>
+                        </h4>
+                        <div ng-if="test.meta">
+                          <span ng-repeat="meta in test.meta" class="label label-{{metaStyle(meta)}}">{{meta}}</span>
                         </div>
-                        <div ng-bind-html="exampleBlock.htmlTable | rawHtml"></div>
+                      </div>
+                      <div id="{{scenario + '-' + $index}}" class="collapse panel-body panel-collapse" ng-class="{'in' : !test.isJustInCase}">
+                        <p ng-if="test.documentation">{{test.documentation}}</p>
+                        <div ng-repeat="step in test.steps" class="indent-block">
+                          <br ng-if="step.leaveBlankLine">
+                          <div ng-bind-html="step.htmlText | rawHtml"></div>
+                          <div ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml" class="indent-block"></div>
+                          <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
+                        </div>
+                        <!--<p ng-if="test.exampleBlocks.length > 0">Examples:</p>-->
+                        <div ng-repeat="exampleBlock in test.exampleBlocks">
+                          <div ng-if="exampleBlock.tags">
+                            <span ng-repeat="tag in exampleBlock.tags" class="label label-{{metaStyle(tag)}}">{{tag}}</span>
+                          </div>
+                          <div ng-bind-html="exampleBlock.htmlTable | rawHtml"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </main>
           </div>
         </div>
       </div>
@@ -150,8 +153,10 @@
     });
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.10.1/mark.min.js"></script>
     <script src="data.js"></script>
     <script src="import/app.js"></script>
+    <script src="import/highlighting.js"></script>
 
   </body>
 </html>

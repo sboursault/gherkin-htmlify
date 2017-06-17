@@ -17,7 +17,7 @@ app.filter('withWords', ['$filter', function ($filter) {
   };
 }])
 
-.service('featureEnhancer', function () {
+.service('FeatureEnhancer', function () {
   this.process = function (features) {
     function hasKnownBug(feature) {
       if (feature.meta.indexOf('@bug') > -1)
@@ -82,7 +82,7 @@ app.filter('withWords', ['$filter', function ($filter) {
   };
 })
 
-.controller("FeatureController", function($scope, $location, featureEnhancer) {
+.controller("FeatureController", ['$scope', '$location', 'FeatureEnhancer', function($scope, $location, FeatureEnhancer) {
 
   $scope.metaStyle = function(meta) {
     // should return one of { 'default', 'primary', 'success', 'info', 'warning', 'danger' }
@@ -96,17 +96,24 @@ app.filter('withWords', ['$filter', function ($filter) {
         return !feature.meta.indexOf('@ignore') > -1 && !feature.meta.indexOf('@unstable') > -1;
       });
     }
-    featureEnhancer.process(features);
+    FeatureEnhancer.process(features);
     $scope.features = features;
   };
 
-  $scope.loadFeatureFromUrlPath = function() {
+  $scope.loadFeatureFromUri = function() {
     var parts = $location.path().split('/');
     var featureParam = parts[2];
     if (featureParam) {
-      $scope.selectedFeature = $scope.features.find(function(elt) { return elt.pathValueForUrl == featureParam } );
+      $scope.selectFeature($scope.features.find(function(elt) { return elt.pathValueForUrl == featureParam } ));
     } else {
-      $scope.selectedFeature = null;
+      $scope.selectFeature(null);
+    }
+  }
+
+  $scope.selectFeature = function(feature) {
+    if ($scope.selectedFeature != feature) {
+      $scope.selectedFeature = feature;
+      document.dispatchEvent(new Event('main-content-changed'));
     }
   }
 
@@ -139,8 +146,9 @@ app.filter('withWords', ['$filter', function ($filter) {
   $scope.project = source.project;
   $scope.selectedFeature = null;
 
-  $scope.$watch(function() { return $location.path();}, $scope.loadFeatureFromUrlPath );
   $scope.loadFeatures(source.features);
-  $scope.loadFeatureFromUrlPath();
+  $scope.loadFeatureFromUri();
   $scope.loadTableOfContents();
-});
+
+  $scope.$watch(function() { return $location.path(); }, $scope.loadFeatureFromUri );
+}]);
