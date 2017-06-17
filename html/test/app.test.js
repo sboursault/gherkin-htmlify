@@ -49,6 +49,18 @@ describe('myApp', function () {
         expect(scope.features[0].tests[0].steps[0].htmlText)
           .to.eql('<span class="step-first-word">Given</span> my apple was poisened');
       });
+      it('wraps template key words', function () {
+        var feature = newSimpleFeature();
+        feature.tests = [{
+          name: 'test 1',
+          steps: [
+            {text: '* Hey Darth, you know what ?'},
+            {text: '* WHAT ?'},
+            {text: '* Oh <Nothing>...'}]}];
+        scope.loadFeatures([ feature ]);
+        expect(scope.features[0].tests[0].steps[2].htmlText)
+          .to.match(/Oh <span class="step-value">&lt;Nothing><\/span>\.\.\.$/);
+      });
       it('generates html from multilign value', function(){
         var feature = newSimpleFeature();
         feature.tests = [{
@@ -76,7 +88,7 @@ describe('myApp', function () {
         scope.loadFeatures([ feature ]);
         expect(scope.features[0].tests[0].exampleBlocks[0].htmlTable)
           .to.eql(
-            '<table class="table table-striped">' +
+            '<table class="table">' +
               '<tr><th>amount</th><th>result</th></tr>' +
               '<tr><td>500 €</td><td>a summary for the transaction</td></tr>' +
               '<tr><td>1200 €</td><td>an error</td></tr>' +
