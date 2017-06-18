@@ -68,10 +68,23 @@ ul {
   color: saddlebrown;
 }
 
+.examples {
+  margin-top: 1.5rem;
+}
+
+.examples table>thead>tr>th, .examples table>tbody>tr>th {
+    font-weight: normal;
+    color: darkgreen;
+    font-style: italic;
+    /*text-decoration: underline;*/
+    /*border-top: none;*/
+}
+
 .step-value {
   /*color: darkblue;*/
   /*color: darkcyan;*/
   color: darkgreen;
+  font-style: italic;
 }
 
 mark{

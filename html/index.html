@@ -103,7 +103,7 @@
                           <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
                         </div>
                         <!--<p ng-if="test.exampleBlocks.length > 0">Examples:</p>-->
-                        <div ng-repeat="exampleBlock in test.exampleBlocks">
+                        <div ng-repeat="exampleBlock in test.exampleBlocks" class="examples">
                           <div ng-if="exampleBlock.tags">
                             <span ng-repeat="tag in exampleBlock.tags" class="label label-{{metaStyle(tag)}}">{{tag}}</span>
                           </div>
