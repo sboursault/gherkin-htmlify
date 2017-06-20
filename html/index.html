@@ -96,12 +96,15 @@
                       </div>
                       <div id="{{scenario + '-' + $index}}" class="collapse panel-body panel-collapse" ng-class="{'in' : !test.isJustInCase}">
                         <p ng-if="test.documentation">{{test.documentation}}</p>
-                        <div ng-repeat="step in test.steps" class="indent-block">
-                          <br ng-if="step.leaveBlankLine">
-                          <div ng-bind-html="step.htmlText | rawHtml"></div>
-                          <div ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml" class="indent-block"></div>
-                          <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
-                        </div>
+                        <span ng-if="test.exampleBlocks.length > 0" class="outline-label">Outline:</span>
+                        <section ng-class="{'outline-steps' : test.exampleBlocks.length > 0}">
+                          <div ng-repeat="step in test.steps" class="indent-block">
+                            <br ng-if="step.leaveBlankLine">
+                            <div ng-bind-html="step.htmlText | rawHtml"></div>
+                            <div ng-if="step.table.length > 0" ng-bind-html="step.htmlTable | rawHtml" class="indent-block"></div>
+                            <div ng-if="step.multilignValue" ng-bind-html="step.htmlMultilignValue | rawHtml" class="indent-block monospace"></div>
+                          </div>
+                        </section>
                         <!--<p ng-if="test.exampleBlocks.length > 0">Examples:</p>-->
                         <div ng-repeat="exampleBlock in test.exampleBlocks" class="examples">
                           <div ng-if="exampleBlock.tags">
