@@ -42,8 +42,6 @@ ul {
 .table>thead>tr>th, .table>thead>tr>td,
 .table>tbody>tr>th, .table>tbody>tr>td {
   border-bottom: 1px solid #ddd;
-  text-align:center;
-  padding: 0.8rem 1rem;
 }
 
 .monospace {

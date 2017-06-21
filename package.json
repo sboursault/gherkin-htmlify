@@ -1,6 +1,6 @@
 {
   "name": "gherkin-htmlify",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "sboursault",
   "description": "Generate html pages from your feature files and share them easier.",
   "repository": {
